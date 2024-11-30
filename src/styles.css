@@ -7,20 +7,50 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 120vh;
   }
   
   .container {
-    display: grid;
-    grid-template-columns: 5fr 3fr;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    max-width: 400px;
-    width: 200%;
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f9;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f4f4f9;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  /* Header layout for welcome message and logout button */
+  .header {
+    display: flex;
+    justify-content: space-between; /* Align items to the far ends */
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+
+  .auth-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
   }
   
   h2 {
@@ -92,6 +122,14 @@ body {
   .link-button:hover {
     color: #89939d;
   }
+
+  .button-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
   
   /* styles.css */
 
@@ -102,17 +140,120 @@ body {
   }
   
   .toggle-button {
-    padding: 8px 16px;
-    font-size: 14px;
-    cursor: pointer;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
   }
   
   .toggle-button:hover {
     background-color: #0056b3;
+  }
+
+  .welcome-message {
+    font-size: 18px;
+    color: #333;
+  }
+
+  .welcome-section {
+    text-align: center;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] 
+  {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 14px;
+  }
+
+  .logged-in-container {
+    position: relative;
+    text-align: center;
+  }
+  
+  logout-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+
+  .search-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    margin: 10px 0;
+  }
+  
+  .logout-button:hover {
+    background-color: #e63939;
+  }
+  
+  
+  /* Center Welcome Message */
+  .logged-in-container h2 {
+    margin-top: 50px; /* Adjust to avoid overlap with the logout button */
+  }
+  
+  
+  /* styles.css */
+
+/* Asset Lookup Styles */
+.asset-lookup {
+    margin-top: 20px;
+  }
+  
+  .input-field {
+    padding: 8px;
+    margin-right: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .lookup-button {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .lookup-button:hover {
+    background-color: #218838;
+  }
+  
+  .asset-details {
+    margin-top: 20px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .asset-details h4 {
+    margin-bottom: 10px;
   }
   

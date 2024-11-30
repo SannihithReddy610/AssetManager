@@ -1,11 +1,11 @@
-// src/App.js
 import React, { useState, useEffect } from "react";
 import Login from "./Login";
 import Signup from "./Signup";
-import PasswordReset from "./PasswordReset"; // Import PasswordReset component
+import PasswordReset from "./PasswordReset";
 import Logout from "./Logout";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import SearchAsset from "./SearchAsset"; // Import the new component
 import "./styles.css";
 
 const App = () => {
@@ -23,30 +23,35 @@ const App = () => {
   return (
     <div className="container">
       {user ? (
-        <div>
-          <h2>Welcome, {user.email}</h2>
-          <Logout />
+        <div className="dashboard">
+          <div className="header">
+            <h2 className="welcome-message">Welcome, {user.email}</h2>
+            <Logout />
+          </div>
+          <SearchAsset /> {/* Include the SearchAsset component */}
         </div>
       ) : (
-        <div>
+        <div className="auth-section">
           {/* Conditional rendering for Login, Signup, and Password Reset */}
           {view === "login" && <Login setView={setView} />}
           {view === "signup" && <Signup />}
           {view === "reset" && <PasswordReset setView={setView} />}
+
+          {/* Buttons for switching views */}
           {view !== "reset" && (
-            <div className="button-container">
+            <div className="button-group">
               <button
                 className="toggle-button"
                 onClick={() => setView(view === "login" ? "signup" : "login")}
               >
-                {view === "login" ? "Create Account" : "Go to Login"}
+                {view === "login" ? "Signup" : "Go to Login"}
               </button>
               {view === "login" && (
                 <button
                   className="toggle-button"
                   onClick={() => setView("reset")}
                 >
-                  Forgot Password
+                  Reset Password
                 </button>
               )}
             </div>
