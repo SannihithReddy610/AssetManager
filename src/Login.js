@@ -18,7 +18,7 @@ const Login = ({ setView }) => {
 
   return (
     <div>
-      <h2>Welcome to Asset Manager</h2>
+      <h2 style={{ textAlign: "left", marginTop: "20px", marginBottom: "20px" }}>Welcome to Asset Manager</h2>
       <form onSubmit={handleLogin}>
         <div>
           <label>Email:</label>

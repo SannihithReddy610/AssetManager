@@ -1,172 +1,180 @@
-/* src/styles.css */
+/* Global Styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: auto; /* Ensure scrolling is enabled */
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f9fc;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 120vh;
-  }
-  
-  .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f4f4f9;
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
+  font-family: Arial, sans-serif;
+  background-color: #f7f9fc;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align to the top */
+  box-sizing: border-box;
+}
 
-  .dashboard {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    min-height: 100vh;
-    background-color: #f4f4f9;
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
-  
-  /* Header layout for welcome message and logout button */
-  .header {
-    display: flex;
-    justify-content: space-between; /* Align items to the far ends */
-    align-items: center;
-    width: 100%;
-    padding: 10px 20px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-  }
-  
+/* Container Styles */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Align items to the top */
+  align-items: center;
+  width: 100%;
+  min-height: 100%; /* Allow it to grow beyond viewport */
+  background-color: #f4f4f9;
+  padding: 20px;
+  box-sizing: border-box; /* Include padding in width/height calculation */
+}
 
-  .auth-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
-  
-  h2 {
-    color: #58bd73;
-    max-width: 400px;
-    width: 200%;
-  }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  label {
-    font-weight: bold;
-    text-align: left;
-  }
-  
-  input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
-  
-  button {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  .toggle-button {
-    margin-top: 15px;
-    background-color: #6c757d;
-  }
-  
-  .toggle-button:hover {
-    background-color: #5a6268;
-  }
-  
-  .error-message {
-    color: red;
-    font-size: 0.9rem;
-  }
-  
-  .success-message {
-    color: green;
-    font-size: 0.9rem;
-  }
-  
-  .link-button {
-    background: none;
-    border: none;
-    color: #007bff;
-    text-decoration: underline;
-    cursor: pointer;
-    padding: 0;
-  }
-  
-  .link-button:hover {
-    color: #89939d;
-  }
+/* Dashboard Layout */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh; /* Full viewport height */
+  background-color: #f4f4f9;
+  padding: 20px;
+  box-sizing: border-box;
+}
 
-  .button-group {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  /* styles.css */
+/* Header Layout */
+.header {
+  display: flex;
+  justify-content: space-between; /* Align items to opposite sides */
+  align-items: center;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
 
-.button-container {
-    display: flex;
-    gap: 10px; /* Adds space between the buttons */
-    margin-top: 10px;
-  }
-  
-  .toggle-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .toggle-button:hover {
-    background-color: #0056b3;
-  }
+h2 {
+  margin: 0;
+  color: #58bd73;
+  font-size: 24px;
+}
 
-  .welcome-message {
-    font-size: 18px;
-    color: #333;
-  }
+h3 {
+  margin: 0;
+  color: #0765e9;
+  font-size: 24px;
+}
 
-  .welcome-section {
-    text-align: center;
-  }
+/* Welcome Section */
+.logged-in-container {
+  position: relative;
+  text-align: center;
+}
 
-  input[type="text"],
-  input[type="email"],
-  input[type="password"] 
-  {
+.logged-in-container h2 {
+  margin-top: 20px; /* Adjust to avoid overlap with the logout button */
+}
+
+/* Asset Details Styles */
+.asset-details {
+  margin-top: 20px;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 90%; /* Prevent horizontal overflow */
+  max-width: 800px; /* Optional max width */
+  overflow-wrap: break-word; /* Handle long text */
+}
+
+/* Lookup Section */
+.asset-lookup {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-field {
+  padding: 8px;
+  margin: 10px 0;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.lookup-button {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.lookup-button:hover {
+  background-color: #218838;
+}
+
+/* Button Styles */
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.toggle-button {
+  background-color: #6c757d;
+}
+
+.toggle-button:hover {
+  background-color: #5a6268;
+}
+
+.logout-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #e63939;
+}
+
+.search-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  margin: 10px 0;
+}
+
+/* Form Styles */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
@@ -174,86 +182,20 @@ body {
   border-radius: 5px;
   box-sizing: border-box;
   font-size: 14px;
-  }
+}
 
-  .logged-in-container {
-    position: relative;
-    text-align: center;
-  }
-  
-  logout-button {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-  }
+/* Error and Success Messages */
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+}
 
-  .search-button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    align-items: center;
-    transition: background-color 0.3s ease;
-    margin: 10px 0;
-  }
-  
-  .logout-button:hover {
-    background-color: #e63939;
-  }
-  
-  
-  /* Center Welcome Message */
-  .logged-in-container h2 {
-    margin-top: 50px; /* Adjust to avoid overlap with the logout button */
-  }
-  
-  
-  /* styles.css */
+.success-message {
+  color: green;
+  font-size: 0.9rem;
+}
 
-/* Asset Lookup Styles */
-.asset-lookup {
-    margin-top: 20px;
-  }
-  
-  .input-field {
-    padding: 8px;
-    margin-right: 10px;
-    width: 300px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .lookup-button {
-    padding: 8px 16px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .lookup-button:hover {
-    background-color: #218838;
-  }
-  
-  .asset-details {
-    margin-top: 20px;
-    background-color: #f8f9fa;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  .asset-details h4 {
-    margin-bottom: 10px;
-  }
-  
+/* Reset Box Sizing */
+* {
+  box-sizing: border-box;
+}
