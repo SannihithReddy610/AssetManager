@@ -42,6 +42,7 @@ const App = () => {
       if (snapshot.exists()) {
         setAssetDetails(snapshot.val());
       } else {
+        alert(`No asset found with Serial Number: ${serialNumber}`);
         setError(`No asset found with Serial Number: ${serialNumber}`);
         setAssetDetails(null);
       }
