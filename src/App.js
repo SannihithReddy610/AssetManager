@@ -4,9 +4,10 @@ import Signup from "./Signup";
 import PasswordReset from "./PasswordReset";
 import Logout from "./Logout";
 import SearchAsset from "./SearchAsset"; // Import the SearchAsset component
-import { auth, database } from "./firebase"; // Firebase instance
-import { ref, get } from "firebase/database"; // Firebase database functions
+import { auth, database, storage } from "./firebase"; // Firebase instance
+import { ref, get, set } from "firebase/database"; // Firebase database functions
 import { onAuthStateChanged } from "firebase/auth";
+import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"; // Firebase storage functions
 import "./styles.css";
 
 const App = () => {
@@ -15,8 +16,15 @@ const App = () => {
   const [assetDetails, setAssetDetails] = useState(null); // Store fetched asset details
   const [error, setError] = useState(""); // Error handling
   const displayedKeys = ["SerialNo", "SAP_Code", "AssetCategory", "CostCenterNew", "GA",
-     "AssetDescription_1","AssetDescription_2","AssetDescription_3","CapDate","Quantity","Unit"];
+    "AssetDescription_1", "AssetDescription_2", "AssetDescription_3", "CapDate", "Quantity", "Unit"];
   const [inputSerialNumber, setInputSerialNumber] = useState("");
+  const [showUpdateOptions, setShowUpdateOptions] = useState(false); // Initially set to false
+  const [imageFile, setImageFile] = useState(null);
+  const [currentLocation, setLocation] = useState("");
+  const [remarks, setRemarks] = useState("");
+  const [imageUrl, setImageUrl] = useState(""); // Store the image URL
+  const [isUploading, setIsUploading] = useState(false); // Track upload status
+
   // Monitor authentication state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -40,15 +48,89 @@ const App = () => {
       setInputSerialNumber(serialNumber);
 
       if (snapshot.exists()) {
-        setAssetDetails(snapshot.val());
+        const fetchedData = snapshot.val();
+        setAssetDetails(fetchedData);
+        setImageUrl(fetchedData.imageUrl || ""); // Set the image URL if it exists
+        setLocation(fetchedData.currentLocation || ""); // Set the location if it exists
+        setRemarks(fetchedData.remarks || ""); // Set the remarks if they exist
+        setShowUpdateOptions(false); // Hide update options on new asset search
       } else {
         alert(`No asset found with Serial Number: ${serialNumber}`);
         setError(`No asset found with Serial Number: ${serialNumber}`);
         setAssetDetails(null);
+        setShowUpdateOptions(false); // Hide update options if no asset is found
       }
     } catch (err) {
       console.error("Error fetching asset details:", err);
       setError("Failed to fetch asset details. Please try again.");
+      setShowUpdateOptions(false); // Hide update options on error
+    }
+  };
+
+  // Function to handle image upload
+  const handleImageUpload = async () => {
+    if (!imageFile) {
+      alert("Please select an image to upload.");
+      return;
+    }
+
+    setIsUploading(true); // Set uploading state to true
+    const imageRef = storageRef(storage, `images/${imageFile.name}`);
+    try {
+      const uploadResult = await uploadBytes(imageRef, imageFile);
+      const downloadURL = await getDownloadURL(uploadResult.ref);
+
+      // Set the image URL to state
+      setImageUrl(downloadURL);
+      alert("Image uploaded successfully!");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert("Failed to upload image.");
+    } finally {
+      setIsUploading(false); // Set uploading state to false after upload completes
+    }
+  };
+
+  // Function to get the current location
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocation(`${latitude}, ${longitude}`);
+        },
+        () => {
+          alert("Unable to retrieve your location.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+
+  // Function to update asset details
+  const updateAssetDetails = async () => {
+    if (!remarks) {
+      alert("Please add remarks before saving.");
+      return;
+    }
+
+    const updatedAsset = {
+      ...assetDetails,
+      imageUrl: imageUrl || assetDetails.imageUrl, // Ensure imageUrl is defined before updating
+      currentLocation,
+      remarks
+    };
+
+    // Update the asset details in Firebase
+    const assetRef = ref(database, `${inputSerialNumber}`);
+    try {
+      await set(assetRef, updatedAsset);
+      alert("Asset details updated successfully!");
+      setShowUpdateOptions(false); // Hide update options after saving
+    } catch (error) {
+      console.error("Error updating asset:", error);
+      alert("Failed to update asset details.");
     }
   };
 
@@ -60,15 +142,15 @@ const App = () => {
           <div style={{ position: "absolute", top: "-25px", bottom: "25px", right: "-5px" }}>
             <Logout />
           </div>
-  
+
           {/* Welcome Message on Top Left */}
           <h2 style={{ textAlign: "left", marginTop: "20px" }}>
             Welcome, {user.email}
           </h2>
-  
+
           {/* Search Asset Component */}
           <SearchAsset fetchAssetDetails={fetchAssetDetails} />
-  
+
           {/* Display Asset Details */}
           {assetDetails && (
             <div style={{ textAlign: "center", margin: "20px 0" }}>
@@ -102,9 +184,68 @@ const App = () => {
                     ))}
                 </tbody>
               </table>
+              {/* Button to show update options */}
+              <button onClick={() => setShowUpdateOptions(true)} style={{ marginTop: "20px" }}>
+                Update Asset Details
+              </button>
             </div>
           )}
-  
+
+          {/* Show Update Options */}
+          {showUpdateOptions && (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginTop: "20px" }}>
+              {/* Image Upload */}
+              <div style={{ marginBottom: "0px" }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files[0])}
+                  id="imageUpload"
+                  style={{ display: "block" }}
+                />
+                <button onClick={handleImageUpload} style={{ marginTop: "10px" }}>
+                  {isUploading ? "Uploading..." : "Upload Image"}
+                </button>
+              </div>
+
+              {/* Show Uploaded Image */}
+              {imageUrl && (
+                <div style={{ marginTop: "0px" }}>
+                  <h4>Existing Image:</h4>
+                  <img src={imageUrl} alt="Uploaded" style={{ width: "100%", maxWidth: "300px", marginBottom: "10px" }} />
+                </div>
+              )}
+
+              {/* Current Location */}
+              <div style={{ marginBottom: "10px" }}>
+                <button onClick={getCurrentLocation} style={{ marginTop: "10px" }}>Get Current Location</button>
+                {currentLocation && <p style={{ marginTop: "5px" }}>{"Current location: " + currentLocation}</p>}
+              </div>
+
+              {/* Remarks */}
+              <div style={{ marginBottom: "10px" }}>
+                <h4 style={{ margin: 0, fontSize: "20px", fontWeight: "bold" }}>Remarks</h4>
+                <textarea
+                  id="remarks"
+                  placeholder="Enter remarks here..."
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                  style={{
+                    width: "100%",
+                    height: "100px",
+                    padding: "10px",
+                    marginTop: "5px",
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    fontSize: "16px"
+                  }}
+                />
+                <button onClick={updateAssetDetails} style={{ marginTop: "10px" }}>Save</button>
+              </div>
+
+            </div>
+          )}
+
           {/* Error Message */}
           {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
         </div>
@@ -145,7 +286,6 @@ const App = () => {
       )}
     </div>
   );
-  
 };
 
 export default App;
