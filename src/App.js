@@ -14,8 +14,8 @@ const App = () => {
   const [user, setUser] = useState(null); // Track logged-in user
   const [assetDetails, setAssetDetails] = useState(null); // Store fetched asset details
   const [error, setError] = useState(""); // Error handling
-  const displayedKeys = ["SerialNo", "AssetNo", "AssetCategory", "AssetSubCategory", "CostCenter", "GA",
-     "Asset_Description_1","Asset_Description_2","Asset_Description_3","CapDate","Quantity","BUn"];
+  const displayedKeys = ["SerialNo", "SAP_Code", "AssetCategory", "CostCenterNew", "GA",
+     "AssetDescription_1","AssetDescription_2","AssetDescription_3","CapDate","Quantity","Unit"];
   const [inputSerialNumber, setInputSerialNumber] = useState("");
   // Monitor authentication state
   useEffect(() => {
@@ -34,7 +34,7 @@ const App = () => {
 
     setError(""); // Clear previous errors
     try {
-      const assetRef = ref(database, `assets/${serialNumber}`);
+      const assetRef = ref(database, `${serialNumber}`);
       const snapshot = await get(assetRef);
 
       setInputSerialNumber(serialNumber);
@@ -72,6 +72,7 @@ const App = () => {
           {/* Display Asset Details */}
           {assetDetails && (
             <div style={{ textAlign: "center", margin: "20px 0" }}>
+              <meta name="viewport" content="width=device-width, initial-scale=0.75"></meta>
               <h3>Asset details with serial number: {inputSerialNumber}</h3>
               <table style={{ margin: "0 auto", border: "1px solid black" }}>
                 <tbody>

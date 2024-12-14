@@ -7,7 +7,7 @@ import { getDatabase } from "firebase/database";
 const firebaseConfig = {
   apiKey: "AIzaSyBVMXuv6HnFPjLnBsR-kqMTGhglEKTXPPo",
   authDomain: "assettmanagerr.firebaseapp.com",
-  databaseURL: "https://assettmanagerr-default-rtdb.asia-southeast1.firebasedatabase.app",
+  databaseURL: "https://assettmanagerr-default-rtdb.asia-southeast1.firebasedatabase.app/",
   projectId: "assettmanagerr",
   storageBucket: "assettmanagerr.firebasestorage.app",
   messagingSenderId: "967087291861",

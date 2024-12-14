@@ -11,12 +11,12 @@ const SearchAsset = ({ fetchAssetDetails }) => {
 
   const handleScanResult = (result, error) => {
     if (result) {
-      result = result.text;
-      const parts = result.split('/');
-      const assetSerialNo = parts[parts.length - 1].replace('.json', '');
-      fetchAssetDetailsHandler(assetSerialNo);
-      console.log("Scanned Result:", assetSerialNo);
-      alert("QR Scan Succesfull. Asset Serial No. = " + assetSerialNo);
+      //result = result.text;
+      //const parts = result.split('/');
+      //const assetSerialNo = parts[parts.length - 1].replace('.json', '');
+      fetchAssetDetailsHandler(result.text);
+      console.log("Scanned Result:", result.text);
+      alert("QR Scan Succesfull. Asset Serial No. = " + result.text);
       //handleScanButtonClick();
     }
 
