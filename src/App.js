@@ -4,7 +4,9 @@ import Signup from "./Signup";
 import PasswordReset from "./PasswordReset";
 import Logout from "./Logout";
 import SearchAsset from "./SearchAsset"; // Import the SearchAsset component
-import { auth, database, storage } from "./firebase"; // Firebase instance
+import AdminPanel from "./AdminPanel"; // Import AdminPanel
+import { doc, getDoc } from "firebase/firestore";
+import { auth, database, storage, firestoreDatabase } from "./firebase"; // Firebase instance
 import { ref, get, set } from "firebase/database"; // Firebase database functions
 import { onAuthStateChanged } from "firebase/auth";
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"; // Firebase storage functions
@@ -24,11 +26,32 @@ const App = () => {
   const [remarks, setRemarks] = useState("");
   const [imageUrl, setImageUrl] = useState(""); // Store the image URL
   const [isUploading, setIsUploading] = useState(false); // Track upload status
+  const [isAdmin, setIsAdmin] = useState(false); // Track if user is admin
+  const [showUserManagement, setShowUserManagement] = useState(false); // State to control User Management visibility
+
 
   // Monitor authentication state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        try {
+          const userDocRef = doc(firestoreDatabase, "users", currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            setIsAdmin(userDoc.data().isAdmin || false);
+          } else {
+            console.warn("User document not found in Firestore.");
+            setIsAdmin(false);
+          }
+        } catch (err) {
+          console.error("Error checking admin status:", err);
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -64,6 +87,15 @@ const App = () => {
       console.error("Error fetching asset details:", err);
       setError("Failed to fetch asset details. Please try again.");
       setShowUpdateOptions(false); // Hide update options on error
+    }
+  };
+
+  // Function to toggle User Management visibility
+  const toggleUserManagement = () => {
+    setShowUserManagement(!showUserManagement);
+    setShowUpdateOptions(false);
+    if (!showUserManagement) {
+      setAssetDetails(null); // Hide asset details when showing user management
     }
   };
 
@@ -145,11 +177,25 @@ const App = () => {
 
           {/* Welcome Message on Top Left */}
           <h2 style={{ textAlign: "left", marginTop: "20px" }}>
-            Welcome, {user.email}
+            Welcome, {user.email} {isAdmin && "(Admin)"}
           </h2>
 
           {/* Search Asset Component */}
           <SearchAsset fetchAssetDetails={fetchAssetDetails} />
+          
+          {/* Admin Panel with User Management Toggle */}
+          {isAdmin && (
+            <>
+            <h3 style={{ textAlign: "left", marginTop: "20px" }}>Admin Panel</h3> 
+              <button onClick={toggleUserManagement} style={{ marginTop: "20px" }}>
+                {showUserManagement ? "Hide User Management" : "Show User Management"}
+              </button>
+            </>
+          )}
+
+          {/* Show User Management if toggled */}
+          {isAdmin && showUserManagement && <AdminPanel />}
+
 
           {/* Display Asset Details */}
           {assetDetails && (
@@ -192,7 +238,7 @@ const App = () => {
           )}
 
           {/* Show Update Options */}
-          {showUpdateOptions && (
+          {!showUserManagement && showUpdateOptions && (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginTop: "20px" }}>
               {/* Image Upload */}
               <div style={{ marginBottom: "0px" }}>
