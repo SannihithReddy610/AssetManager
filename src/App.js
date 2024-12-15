@@ -34,20 +34,28 @@ const App = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      setAssetDetails(null);
       if (currentUser) {
         try {
           const userDocRef = doc(firestoreDatabase, "users", currentUser.uid);
-          const userDoc = await getDoc(userDocRef);
-
+          const userDoc = await getDoc(userDocRef); 
           if (userDoc.exists()) {
-            setIsAdmin(userDoc.data().isAdmin || false);
+            const userData = userDoc.data();
+            if (userData.isApproved === false) {
+              setUser(null); // Log out the user if account is pending
+            } else if (userData.isApproved === true) {
+              setIsAdmin(userData.isAdmin || false);
+            } else {
+              setUser(null);
+            }
           } else {
-            console.warn("User document not found in Firestore.");
-            setIsAdmin(false);
+            setError("User document not found.");
+            setUser(null);
           }
         } catch (err) {
-          console.error("Error checking admin status:", err);
-          setIsAdmin(false);
+          console.error("Error checking user status:", err);
+          setError("Error checking user status.");
+          setUser(null);
         }
       } else {
         setIsAdmin(false);
@@ -74,6 +82,9 @@ const App = () => {
         const fetchedData = snapshot.val();
         setAssetDetails(fetchedData);
         setImageUrl(fetchedData.imageUrl || ""); // Set the image URL if it exists
+        if (fetchedData.imageUrl && fetchedData.imageUrl.trim() !== "") {
+          alert(`Asset already verified`);
+        }
         setLocation(fetchedData.currentLocation || ""); // Set the location if it exists
         setRemarks(fetchedData.remarks || ""); // Set the remarks if they exist
         setShowUpdateOptions(false); // Hide update options on new asset search
@@ -93,8 +104,7 @@ const App = () => {
   // Function to toggle User Management visibility
   const toggleUserManagement = () => {
     setShowUserManagement(!showUserManagement);
-    setShowUpdateOptions(false);
-    if (!showUserManagement) {
+    if (showUserManagement) {
       setAssetDetails(null); // Hide asset details when showing user management
     }
   };
@@ -196,7 +206,6 @@ const App = () => {
           {/* Show User Management if toggled */}
           {isAdmin && showUserManagement && <AdminPanel />}
 
-
           {/* Display Asset Details */}
           {assetDetails && (
             <div style={{ textAlign: "center", margin: "20px 0" }}>
@@ -238,7 +247,7 @@ const App = () => {
           )}
 
           {/* Show Update Options */}
-          {!showUserManagement && showUpdateOptions && (
+          {assetDetails && showUpdateOptions && (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginTop: "20px" }}>
               {/* Image Upload */}
               <div style={{ marginBottom: "0px" }}>
@@ -288,7 +297,6 @@ const App = () => {
                 />
                 <button onClick={updateAssetDetails} style={{ marginTop: "10px" }}>Save</button>
               </div>
-
             </div>
           )}
 
@@ -298,7 +306,7 @@ const App = () => {
       ) : (
         <div>
           {/* Conditional rendering for Login, Signup, and Password Reset */}
-          {view === "login" && <Login setView={setView} />}
+          {view === "login" && <Login />}
           {view === "signup" && <Signup />}
           {view === "reset" && <PasswordReset setView={setView} />}
           {view !== "reset" && (

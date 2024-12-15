@@ -10,24 +10,30 @@ const Signup = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+
   const handleSignup = async (e) => {
     e.preventDefault();
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
       return;
     }
+
     try {
+      // Create user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Save user details in Firestore
+      // Save user details in Firestore with isApproved set to false
       await setDoc(doc(firestoreDatabase, "users", user.uid), {
         name,
         email,
-        isAdmin: false, // Default to non-admin
+        isAdmin: false, // Default is not admin
+        isApproved: false, // Default is not approved
       });
 
-      setSuccess("Signup successful! You can now log in.");
+
+      // Success message
+      alert("Signup successful! Await admin approval to activate your account.");
       setError("");
       setEmail("");
       setPassword("");
